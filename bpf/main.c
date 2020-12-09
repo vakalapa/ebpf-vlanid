@@ -16,6 +16,8 @@ static inline int egress_pod_vlan(struct __sk_buff *skb)
         char msg[] = "Hello, BPF World! received a pkt";
         bpf_trace_printk(msg, sizeof(msg));
     }
+
+    return TC_ACT_OK;
 }
 
 char __license[] SEC("license") = "GPL";
