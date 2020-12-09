@@ -1,6 +1,5 @@
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/if_vlan.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <linux/bpf.h>
 
 #define SEC(NAME) __attribute__((section(NAME), used))
@@ -11,7 +10,8 @@ static int (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
 SEC("egress")
 static inline int egress_pod_vlan(struct __sk_buff *skb)
 {
-    if (!skb_vlan_tagged(skb))
+    uint16_t vlan_id = skb->vlan_tci & 0x0fff;
+    if (vlan_id == 0)
     {
         char msg[] = "Hello, BPF World! received a pkt";
         bpf_trace_printk(msg, sizeof(msg));
