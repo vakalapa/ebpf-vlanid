@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <linux/bpf.h>
+#include <linux/pkt_cls.h>
 
 #define SEC(NAME) __attribute__((section(NAME), used))
 
