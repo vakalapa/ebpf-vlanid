@@ -10,6 +10,7 @@
 
 static int (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
     (void *)BPF_FUNC_trace_printk;
+static int (*bpf_skb_load_bytes)(void *ctx, int off, void *to, int len) = (void *)BPF_FUNC_skb_load_bytes;
 
 SEC("egress")
 static inline int egress_pod_vlan(struct __sk_buff *skb)
@@ -25,7 +26,7 @@ static inline int egress_pod_vlan(struct __sk_buff *skb)
 
     struct ethhdr *eth_hdr;
 
-    BPF_FUNC_skb_load_bytes(skb, 0, eth_hdr, sizeof(struct ethhdr));
+    bpf_skb_load_bytes(skb, 0, eth_hdr, sizeof(struct ethhdr));
     char msg[] = "Hello, Packet info: smac %s dmac %s proto %x\n ";
     bpf_trace_printk(msg, sizeof(msg), eth_hdr->h_source, eth_hdr->h_dest, eth_hdr->h_proto);
     return TC_ACT_OK;
