@@ -15,18 +15,22 @@ static int (*bpf_skb_load_bytes)(void *ctx, int off, void *to, int len) = (void 
 SEC("egress")
 static inline int egress_pod_vlan(struct __sk_buff *skb)
 {
+
+    //data limits
+    void *data_end = (void *)(long)skb->data_end;
+    void *data = (void *)(long)skb->data;
+    if (data_end < (data + OFFSET_BASE_ETH))
+        return TC_ACT_OK;
+
+    // check vlan id
     uint16_t vlan_id = skb->vlan_tci & 0x0fff;
-    if (skb->data_end < (skb->data + OFFSET_BASE_ETH))
-        return -1;
     if (vlan_id == 0)
     {
         char msg[] = "Hello, BPF World! received a pkt  %x\n ";
         bpf_trace_printk(msg, sizeof(msg), skb->vlan_present);
     }
 
-    struct ethhdr *eth_hdr = NULL;
-
-    bpf_skb_load_bytes(skb, 0, eth_hdr, sizeof(struct ethhdr));
+    struct ethhdr *eth_hdr = data;
     char msg[] = "Hello, Packet info: smac %s dmac %s proto %x\n ";
     bpf_trace_printk(msg, sizeof(msg), eth_hdr->h_source, eth_hdr->h_dest, eth_hdr->h_proto);
     return TC_ACT_OK;
