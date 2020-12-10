@@ -35,7 +35,8 @@ static inline int egress_pod_vlan(struct __sk_buff *skb)
     char msgn[] = "Hello, Packet info: smac %s dmac %s\n";
     char smac[ETH_ALEN + 1];
     smac = eth_hdr->h_source;
-    smac[ETH_ALEN] = "\0" bpf_trace_printk(msgn, sizeof(msgn), smac);
+    smac[ETH_ALEN] = "\0";
+    bpf_trace_printk(msgn, sizeof(msgn), smac);
     return TC_ACT_OK;
 }
 
