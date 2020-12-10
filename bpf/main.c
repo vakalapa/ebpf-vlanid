@@ -24,14 +24,15 @@ static inline int egress_pod_vlan(struct __sk_buff *skb)
 
     // check vlan id
     uint16_t vlan_id = skb->vlan_tci & 0x0fff;
+    /*
     if (vlan_id == 0)
     {
         char msg[] = "Hello, BPF World! received a pkt  %x\n ";
         bpf_trace_printk(msg, sizeof(msg), skb->vlan_present);
-    }
+    }*/
 
     struct ethhdr *eth_hdr = data;
-    char msgn[] = "Hello, Packet info: smac %s dmac %s proto %x\n ";
+    char msgn[] = "Hello, Packet info: smac %s dmac %s proto %d\n ";
     bpf_trace_printk(msgn, sizeof(msgn), eth_hdr->h_source, eth_hdr->h_dest, eth_hdr->h_proto);
     return TC_ACT_OK;
 }
