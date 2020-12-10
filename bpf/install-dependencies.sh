@@ -27,9 +27,10 @@ interface=$1
 
 clang -O2 -Wall -target bpf -c main.c -o vlan_tag.o
 
-tc qdisc add dev $interface clsact
-tc filter add dev $interface egress bpf da obj vlan_tag.o sec egress
-
+if [ $? -eq 0 ]; then
+    tc qdisc add dev $interface clsact
+    tc filter add dev $interface egress bpf da obj vlan_tag.o sec egress
+fi
 #  sudo tc filter show dev eth0 egress
 #  sudo  tc filter add dev vethd81a9eb egress bpf da obj vlan_tag.o sec egress
 #  sudo tc filter del dev eth0 egress pref 49152
