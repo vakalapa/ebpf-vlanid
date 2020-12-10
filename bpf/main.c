@@ -31,8 +31,8 @@ static inline int egress_pod_vlan(struct __sk_buff *skb)
     }
 
     struct ethhdr *eth_hdr = data;
-    char msg[] = "Hello, Packet info: smac %s dmac %s proto %x\n ";
-    bpf_trace_printk(msg, sizeof(msg), eth_hdr->h_source, eth_hdr->h_dest, eth_hdr->h_proto);
+    char msgn[] = "Hello, Packet info: smac %s dmac %s proto %x\n ";
+    bpf_trace_printk(msgn, sizeof(msgn), eth_hdr->h_source, eth_hdr->h_dest, eth_hdr->h_proto);
     return TC_ACT_OK;
 }
 
