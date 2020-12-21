@@ -28,11 +28,12 @@ interface=$1
 clang -O2 -Wall -target bpf -c main.c -o vlan_tag.o
 
 if [ $? -eq 0 ]; then
-    tc qdisc add dev $interface clsact
-    for i  in $(tc filter show dev $interface egress | awk '{print $5}'); do 
-        tc filter del dev $interface egress pref $i
-    done 
-    tc filter add dev $interface egress bpf da obj vlan_tag.o sec egress
+    #tc qdisc add dev $interface clsact
+    #for i  in $(tc filter show dev $interface egress | awk '{print $5}'); do 
+    #    tc filter del dev $interface egress pref $i
+    #done 
+    tc filter add dev $interface egress bpf da obj vlan_tag.o sec ingress
+    tc filter add dev $interface ingress bpf da obj vlan_tag.o sec egress
 fi
 #  sudo tc filter show dev eth0 egress
 #  sudo  tc filter add dev vethd81a9eb egress bpf da obj vlan_tag.o sec egress
