@@ -13,7 +13,7 @@
 
 static int (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
     (void *)BPF_FUNC_trace_printk;
-static int (*bpf_skb_load_bytes)(void *ctx, int off, void *to, int len) = (void *)BPF_FUNC_skb_load_bytes;
+//static int (*bpf_skb_load_bytes)(void *ctx, int off, void *to, int len) = (void *)BPF_FUNC_skb_load_bytes;
 static int (*bpf_skb_vlan_push)(void *ctx, __be16 vlan_proto, __u16 vlan_tci) =
     (void *)BPF_FUNC_skb_vlan_push;
 static int (*bpf_skb_vlan_pop)(void *ctx) =
@@ -122,11 +122,12 @@ static inline int ingress_pod_vlan(struct __sk_buff *skb)
     if (skb->ifindex == 14)
     {
         newif = 12;
-        bpf_skb_store_bytes(skb, offsetof(struct ethhdr, h_dest), ns1_mac, ETH_ALEN, 0);
+        //bpf_skb_store_bytes(skb, offsetof(struct ethhdr, h_dest), ns1_mac, ETH_ALEN, 0);
     }
     else
     {
-        bpf_skb_store_bytes(skb, offsetof(struct ethhdr, h_dest), ns2_mac, ETH_ALEN, 0);
+        (void)0;
+        //bpf_skb_store_bytes(skb, offsetof(struct ethhdr, h_dest), ns2_mac, ETH_ALEN, 0);
     }
     char msgnn[] = "Hello, before removing vlan : proto %d vlan:%d \n";
     bpf_trace_printk(msgnn, sizeof(msgnn), eth_hdr->h_proto, skb->vlan_tci);
